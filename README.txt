@@ -40,3 +40,5 @@ Known issues:
 -When loading files the file reader may incorrectly convert the time positions and not display the annotations correctly. Try uploading your file again.
 -Not all videos are allowed to embed, so these videos will not work.
 
+Check out the website here: http://annotatorr.byethost4.com/index.html
+
