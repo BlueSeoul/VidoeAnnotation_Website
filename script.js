@@ -40,7 +40,7 @@ let isRefreshed = false;
 let currentVidSeg;
 let runs;
 let cancelruns;
-var hideTimeline;
+var hideTimeline = false;
 var increaseStartTimeButton = document.getElementById("start_add");
 var decreaseStartTimeButton = document.getElementById("start_subtract");
 var incraseEndTimeButton = document.getElementById("end_add");
@@ -183,9 +183,25 @@ antUpload.addEventListener('change',()=>{
 			drawSegments(false);
 			startup = true;
 		}
+		if(antUpload.files[0].name.substr(antUpload.files[0].name.lastIndexOf("."), antUpload.files[0].name.length) == ".csv")
+		{
+			var wb = XLSX.read(fr.result, { type: 'array', raw:true });
+			var ws = wb.Sheets[wb.SheetNames[0]];
+            var data = XLSX.utils.sheet_to_json(ws, { header: 1});
+            console.log(data);
+			parseJsonIntoSegments(data);
+			drawSegments(false);
+			startup = true;
+		}
 		else if(antUpload.files[0].name.substr(antUpload.files[0].name.lastIndexOf("."), antUpload.files[0].name.length) == ".txt")
 		{
-			console.log(antUpload[0]);
+			var wb = XLSX.read(fr.result, { type: 'array', raw:true });
+			var ws = wb.Sheets[wb.SheetNames[0]];
+            var data = XLSX.utils.sheet_to_json(ws, { header: 1, cellText: false });
+            console.log(data);
+			parseJsonIntoSegments(data);
+			drawSegments(false);
+			startup = true;
 		}
 		else{
 			alert("Unknown file format, try another one.");
@@ -233,11 +249,11 @@ function parseJsonIntoSegments(data)
 {
 	console.log("Parsing data: " + data);
 	//checks if the file matches the formate to read annotations
-	if (parseInt(data[1][3].split(":")[1]).isNaN)
+/*	if (parseInt(data[1][3].split(":")[1]).isNaN)
 	{
 		alert("check to see if there is a time value on columns D and E starting from the second row.");
 		return;
-	}
+	}*/
 	//clears current segment array just in case there are mic values.
 	segments = [];
 	
@@ -501,14 +517,9 @@ function testFunction(text)
 		runs = true;
 	}
 		
-	if(text == "txt")
+	if(text == "server")
 	{
-		var file = new Blob([data_String],{type:"text"});
-		runs = true;
-		var anchor = document.createElement("a");
-		anchor.href = URL.createObjectURL(file);
-		anchor.download = segments[0].title + ".txt";
-		anchor.click();
+		alert("Not available yet; coming soon");
 	}
 
 	else if (runs == false)
@@ -1058,7 +1069,7 @@ function timeConvert(timeval, Ename)
 	else{
 		hours = "0" + Math.round(hours);
 	}
-	
+	console.log("Time converted:" + hours + ":" + minutes + ":" + seconds);
 	if(hours > 0)
 	{
 		if(hideTimeline == false)
